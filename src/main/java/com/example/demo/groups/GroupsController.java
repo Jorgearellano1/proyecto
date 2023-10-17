@@ -1,7 +1,6 @@
 package com.example.demo.groups;
 
 import com.example.demo.persons.Persons;
-import com.example.demo.persons.PersonsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +15,6 @@ public class GroupsController {
     @Autowired
     private GroupsRepository groupRepository;
 
-    @Autowired
-    private PersonsRepository personsRepository;
-
     @GetMapping
     public List<Groups> getAllGroups() {
         return groupRepository.findAll();
@@ -31,43 +27,10 @@ public class GroupsController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{groupId}/persons")
-    public ResponseEntity<Set<Persons>> getPersonsInGroup(@PathVariable Long groupId) {
+    @GetMapping("/{groupId}/persons/x")
+    public ResponseEntity<Set<Persons>> getPersonsInGroupById(@PathVariable Long groupId) {
         return groupRepository.findById(groupId)
                 .map(group -> ResponseEntity.ok().body(group.getPersons()))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/persons")
-    public List<Persons> getAllPersons() {
-        return personsRepository.findAll();
-    }
-
-    @GetMapping("/persons/{personId}")
-    public ResponseEntity<Persons> getPersonById(@PathVariable Long personId) {
-        return personsRepository.findById(personId)
-                .map(person -> ResponseEntity.ok().body(person))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/{groupId}/persons/{personId}")
-    public ResponseEntity<Groups> getGroupWithPerson(@PathVariable Long groupId, @PathVariable Long personId) {
-        return (ResponseEntity<Groups>) groupRepository.findById(groupId)
-                .map(group -> {
-                    Set<Persons> persons = group.getPersons();
-                    if (persons.stream().anyMatch(person -> person.getId().equals(personId))) {
-                        return ResponseEntity.ok().body(group);
-                    } else {
-                        return ResponseEntity.notFound().build();
-                    }
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/persons/{personId}/groups")
-    public ResponseEntity<Persons> getPersonWithGroup(@PathVariable Long personId) {
-        return personsRepository.findById(personId)
-                .map(person -> ResponseEntity.ok().body(person))
                 .orElse(ResponseEntity.notFound().build());
     }
 
