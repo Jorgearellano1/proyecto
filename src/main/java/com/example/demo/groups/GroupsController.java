@@ -27,7 +27,7 @@ public class GroupsController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{groupId}/persons/x")
+    @GetMapping("/{groupId}/persons")
     public ResponseEntity<Set<Persons>> getPersonsInGroupById(@PathVariable Long groupId) {
         return groupRepository.findById(groupId)
                 .map(group -> ResponseEntity.ok().body(group.getPersons()))
